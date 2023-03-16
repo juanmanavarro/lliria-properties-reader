@@ -1,4 +1,11 @@
-# Uso
+# Usage
 
-1. node index.js
-2. node gen-json.js
+To generate the json output:
+```
+npm run generate
+```
+
+To test the json output:
+```
+npm run test
+```
