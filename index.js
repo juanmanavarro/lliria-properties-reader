@@ -1,8 +1,6 @@
 import { PdfReader } from "pdfreader";
 import fs from 'fs';
 
-const dataArray = [];
-
 const getColumn = item => {
   if ( item.x > 3 && item.x < 5 ) {
     return 'type';
@@ -37,15 +35,40 @@ const getRow = item => {
     row++;
   }
 
-
-
   return row;
 }
 
+const writeJson = data => {
+  const output = [];
+  let row = 1;
+  let rowItem = {};
+
+  for (const item of data) {
+    if ( item.row !== row ) {
+      output.push(rowItem);
+      rowItem = {};
+      row = item.row;
+    }
+
+    rowItem.row = item.row;
+
+    if ( rowItem[item.column] ) {
+      rowItem[item.column] += item.text;
+    } else {
+      rowItem[item.column] = item.text;
+    }
+  }
+
+  output.push(rowItem);
+
+  fs.writeFileSync('./output.json', JSON.stringify(output, null, 2));
+}
+
+const dataArray = [];
 new PdfReader().parseFileItems("./inmuebles.pdf", (err, item) => {
   if (err) console.error("error:", err);
   else if (!item) {
-    fs.writeFileSync('./inmuebles.json', JSON.stringify(dataArray, null, 2))
+    writeJson(dataArray);
   }
   else if (item.text) {
     if ( item.text.trim() === 'BIENES INMUEBLES AYUNTAMIENTO DE LLÍRIA') return;
