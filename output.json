@@ -1034,6 +1034,8 @@
     "type": "Rústica",
     "description": "Parcela 5 de terreno (P.K. 29/037 al 29/107) de 1.035m2",
     "address": "Polígono 99 parcela 69, Topairet, Llíria (Valencia)",
-    "surface": "726m2 en U.E.-54; 309m2 en viario fuera de U.E.; 1035m2 de superficie gráfica; 1035m2 de superficie"
+    "surface": "726m2 en U.E.-54; 309m2 en viario fuera de U.E.; 1035m2 de superficie gráfica; 1035m2 de superficie",
+    "lat": 39.6072802,
+    "lon": -0.6034367
   }
 ]

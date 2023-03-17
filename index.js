@@ -3,6 +3,7 @@ dotenv.config();
 import { PdfReader } from "pdfreader";
 import fs from 'fs';
 import axios from 'axios';
+import { Parser } from '@json2csv/plainjs';
 
 const getColumn = item => {
   if ( item.x > 3 && item.x < 5 ) {
@@ -86,9 +87,21 @@ const writeJson = async data => {
     }
   }
 
-  output.push(rowItem);
+  const prop = {
+    ...rowItem,
+    ...(await getCoords(rowItem)),
+  };
+  output.push(prop);
 
   fs.writeFileSync('./output.json', JSON.stringify(output, null, 2));
+
+  try {
+    const parser = new Parser();
+    const csv = parser.parse(output);
+    fs.writeFileSync('./output.csv', csv);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 const dataArray = [];
