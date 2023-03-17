@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { PdfReader } from "pdfreader";
 import fs from 'fs';
+import axios from 'axios';
 
 const getColumn = item => {
   if ( item.x > 3 && item.x < 5 ) {
@@ -11,7 +14,7 @@ const getColumn = item => {
   } else if ( item.x > 11 && item.x < 21 ) {
     return 'description';
   } else if ( item.x > 21 && item.x < 30 ) {
-    return 'loc';
+    return 'address';
   } else if ( item.x > 30 && item.x < 34 ) {
     return 'use';
   } else if ( item.x > 34 && item.x < 38 ) {
@@ -38,14 +41,38 @@ const getRow = item => {
   return row;
 }
 
-const writeJson = data => {
+const getCoords = async (item) => {
+  var config = {
+    method: 'get',
+    url: `https://api.mapbox.com/geocoding/v5/mapbox.places/${item.address},${item.city}.json`,
+    params: {
+      limit: 1,
+      access_token: process.env.MAPBOX_API_KEY,
+    },
+    headers: { }
+  };
+
+  const res = await axios(config);
+  const center = res.data.features[0].center;
+
+  return {
+    lat: center[1],
+    lon: center[0],
+  }
+}
+
+const writeJson = async data => {
   const output = [];
   let row = 1;
   let rowItem = {};
 
   for (const item of data) {
     if ( item.row !== row ) {
-      output.push(rowItem);
+      const prop = {
+        ...rowItem,
+        ...(await getCoords(rowItem)),
+      };
+      output.push(prop);
       rowItem = {};
       row = item.row;
     }
