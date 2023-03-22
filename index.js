@@ -56,6 +56,14 @@ const getCoords = async (item) => {
   const res = await axios(config);
   const center = res.data.features[0].center;
 
+  if ( center[1] > 39.939353 || center[1] < 39.248070 ) {
+    return null;
+  }
+
+  if ( center[0] > -0.078606 || center[0] < -1.212944 ) {
+    return null;
+  }
+
   return {
     lat: center[1],
     lon: center[0],
